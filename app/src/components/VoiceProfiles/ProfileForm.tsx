@@ -805,10 +805,12 @@ export function ProfileForm() {
         {/*
           The columns below scroll vertically, and overflow-y-auto also clips horizontally, which
           cut off the 4px focus ring (ring-2 + ring-offset-2) on inputs at the column edges.
-          This wrapper gets px-1 of clip room (width widened to match), the grid pulls back out
-          with -mx-1, and each column pads its content back in so alignment is unchanged.
+          Every clipping box (this wrapper, the grid, each column) grows by 4px on its clipped sides
+          and pads its content back in, so no content box moves at any window width. The wrapper
+          uses box-content so w-full/max-w-5xl still size its content box, and justify-self-center
+          instead of mx-auto so it stays centered when the extra 4px overflows a narrow window.
         */}
-        <div className="max-w-[calc(64rem+0.5rem)] px-1 h-[85vh] mx-auto my-auto w-full flex flex-col overflow-hidden">
+        <div className="box-content max-w-5xl w-full px-1 justify-self-center h-[85vh] my-auto flex flex-col overflow-hidden">
           <DialogHeader>
             <DialogTitle className="text-2xl">
               {editingProfileId ? t('profileForm.editTitle') : t('profileForm.createTitle')}
@@ -851,9 +853,9 @@ export function ProfileForm() {
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 min-h-0 flex flex-col">
-              <div className="grid gap-6 grid-cols-2 flex-1 min-h-0 overflow-hidden -mx-1">
+              <div className="grid gap-6 grid-cols-2 flex-1 min-h-0 overflow-hidden -mx-1 px-1">
                 {/* Left column: Sample management */}
-                <div className="space-y-4 border-r pl-1 pr-6 pb-1 overflow-y-auto min-h-0">
+                <div className="space-y-4 border-r -ml-1 pl-1 pr-6 pb-1 overflow-y-auto min-h-0">
                   {isCreating ? (
                     <>
                       {/* Voice source selector */}
@@ -1116,7 +1118,7 @@ export function ProfileForm() {
                 </div>
 
                 {/* Right column: Profile info */}
-                <div className="space-y-4 px-1 pb-1 overflow-y-auto min-h-0">
+                <div className="space-y-4 -mx-1 px-1 pb-1 overflow-y-auto min-h-0">
                   {/* Avatar Upload */}
                   <FormField
                     control={form.control}
