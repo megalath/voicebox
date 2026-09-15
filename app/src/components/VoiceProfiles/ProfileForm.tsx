@@ -802,7 +802,13 @@ export function ProfileForm() {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-none w-screen h-screen left-0 top-0 translate-x-0 translate-y-0 rounded-none p-6 overflow-hidden">
-        <div className="max-w-5xl h-[85vh] mx-auto my-auto w-full flex flex-col overflow-hidden">
+        {/*
+          The columns below scroll vertically, and overflow-y-auto also clips horizontally, which
+          cut off the 4px focus ring (ring-2 + ring-offset-2) on inputs at the column edges.
+          This wrapper gets px-1 of clip room (width widened to match), the grid pulls back out
+          with -mx-1, and each column pads its content back in so alignment is unchanged.
+        */}
+        <div className="max-w-[calc(64rem+0.5rem)] px-1 h-[85vh] mx-auto my-auto w-full flex flex-col overflow-hidden">
           <DialogHeader>
             <DialogTitle className="text-2xl">
               {editingProfileId ? t('profileForm.editTitle') : t('profileForm.createTitle')}
@@ -845,9 +851,9 @@ export function ProfileForm() {
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 min-h-0 flex flex-col">
-              <div className="grid gap-6 grid-cols-2 flex-1 min-h-0 overflow-hidden">
+              <div className="grid gap-6 grid-cols-2 flex-1 min-h-0 overflow-hidden -mx-1">
                 {/* Left column: Sample management */}
-                <div className="space-y-4 border-r pr-6 overflow-y-auto min-h-0">
+                <div className="space-y-4 border-r pl-1 pr-6 pb-1 overflow-y-auto min-h-0">
                   {isCreating ? (
                     <>
                       {/* Voice source selector */}
@@ -1110,7 +1116,7 @@ export function ProfileForm() {
                 </div>
 
                 {/* Right column: Profile info */}
-                <div className="space-y-4 overflow-y-auto min-h-0">
+                <div className="space-y-4 px-1 pb-1 overflow-y-auto min-h-0">
                   {/* Avatar Upload */}
                   <FormField
                     control={form.control}
